@@ -16,3 +16,5 @@
 			}else
 			echo "Failed to store Data";
 		}
+
+?>
