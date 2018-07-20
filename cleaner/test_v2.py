@@ -12,6 +12,7 @@ from PyQt5.QtCore import *
 class ERP(QWidget):
     def __init__(self): 
         super().__init__()
+        # self.setWindowIcon(QIcon())
 
     def initUI(self):
         self.setWindowIcon('xvi-favicon-150x150')
@@ -69,49 +70,73 @@ class ERP(QWidget):
 
     def cleaner(self, app, emp, save):
 
-        # Read excel file (applicants)
-        xlsx_applicants = pd.ExcelFile(app)
-        raw_applicants = pd.read_excel(xlsx_applicants, converters={'Application Date': str})
+        xlsx_applicants = pd.ExcelFile('C:/Users/XBoss/Documents/GitHub/DBWOJUL1.xlsx')
+        # /////////////////////////////////////////////////////////////////////////////////////////////////
+        raw_clark = pd.read_excel(xlsx_applicants,sheet_name='CLARK', converters={'Application Date': str})
+        raw_clark.columns = raw_clark.columns.str.replace(',', '')
+        raw_clark.columns = raw_clark.columns.str.replace('\s+', ' ', regex=True)
+        raw_clark.columns = raw_clark.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+        raw_clark.rename(columns = {'if_erp_referrer_name': 'referrer_name',
+        'if_erp_referrer_hrid': 'referrer_hrid'}, inplace=True)
+        new_raw_clark = raw_clark[['application_date', 'last_name', 'first_name', 'general_source', 'referrer_name', 'referrer_hrid']].copy()
+        # ////////////////////////////////////////////////////////////////////////////////////////////////
+        raw_davao = pd.read_excel(xlsx_applicants,sheet_name='DAVAO', converters={'Application Date': str})
+        raw_davao.columns = raw_davao.columns.str.replace(',', '')
+        raw_davao.columns = raw_davao.columns.str.replace('\s+', ' ', regex=True)
+        raw_davao.columns = raw_davao.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+        raw_davao.rename(columns = {'if_erp_referrer_name': 'referrer_name',
+        'if_erp_referrer_hrid': 'referrer_hrid'}, inplace=True)
+        new_raw_davao = raw_davao[['application_date', 'last_name', 'first_name', 'general_source', 'referrer_name', 'referrer_hrid']].copy()
+        # ////////////////////////////////////////////////////////////////////////////////////////////////
+        raw_makati = pd.read_excel(xlsx_applicants,sheet_name='MAKATI', converters={'Application Date': str})
+        raw_makati.columns = raw_makati.columns.str.replace(',', '')
+        raw_makati.columns = raw_makati.columns.str.replace('\s+', ' ', regex=True)
+        raw_makati.columns = raw_makati.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+        raw_makati.rename(columns = {'if_erp_referrer_name': 'referrer_name',
+        'if_erp_referrer_hrid': 'referrer_hrid'}, inplace=True)
+        new_raw_makati = raw_makati[['application_date', 'last_name', 'first_name', 'general_source', 'referrer_name', 'referrer_hrid']].copy()
+        # /////////////////////////////////////////////////////////////////////////////////////////////////
+        raw_moa = pd.read_excel(xlsx_applicants,sheet_name='MOA', converters={'Application Date': str})
+        raw_moa.columns = raw_moa.columns.str.replace(',', '')
+        raw_moa.columns = raw_moa.columns.str.replace('\s+', ' ', regex=True)
+        raw_moa.columns = raw_moa.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+        raw_moa.rename(columns = {'if_erp_referrer_name': 'referrer_name',
+        'if_erp_referrer_hrid': 'referrer_hrid'}, inplace=True)
+        new_raw_moa = raw_moa[['application_date', 'last_name', 'first_name', 'general_source', 'referrer_name', 'referrer_hrid']].copy()
+        # /////////////////////////////////////////////////////////////////////////////////////////////////
+        raw_qc = pd.read_excel(xlsx_applicants,sheet_name='QC', converters={'Application Date': str})
+        raw_qc.columns = raw_qc.columns.str.replace(',', '')
+        raw_qc.columns = raw_qc.columns.str.replace('\s+', ' ', regex=True)
+        raw_qc.columns = raw_qc.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
+        raw_qc.rename(columns = {'if_erp_referrer_name': 'referrer_name',
+        'if_erp_referrer_hrid': 'referrer_hrid'}, inplace=True)
+        new_raw_qc = raw_qc[['application_date', 'last_name', 'first_name', 'general_source', 'referrer_name', 'referrer_hrid']].copy()
 
-        # Read excel file (employes)
-        xlsx_employees = pd.ExcelFile(emp)
+        new_raw_clark = new_raw_clark.loc[:, ~new_raw_clark.columns.duplicated()]
+        new_raw_davao = new_raw_davao.loc[:, ~new_raw_davao.columns.duplicated()]
+        new_raw_makati = new_raw_makati.loc[:, ~new_raw_makati.columns.duplicated()]
+        new_raw_moa = new_raw_moa.loc[:, ~new_raw_moa.columns.duplicated()]
+        new_raw_qc = new_raw_qc.loc[:, ~new_raw_qc.columns.duplicated()]
+
+        raw_applicants = pd.concat([new_raw_clark,new_raw_davao,new_raw_makati,new_raw_moa,new_raw_qc],axis=0)
+        # //////////////////////////////////////////////////////////////////////////////////////////////////////
+        xlsx_employees = pd.ExcelFile('C:/Users/XBoss/Documents/GitHub/ERP_SITEE_JUNE7.xlsx')
         raw_employees = pd.read_excel(xlsx_employees)
 
-        raw_applicants.columns = raw_applicants.columns.str.replace(',', '')
-        raw_applicants.columns = raw_applicants.columns.str.replace('\s+', ' ', regex=True)
-        raw_applicants.columns = raw_applicants.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
         raw_employees.columns = raw_employees.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('(', '').str.replace(')', '')
-        # Rename raw_applicants & raw_employees columns to extract
-        raw_applicants.rename(columns = {'if_erp_referrer_name': 'referrer_name',
-        'if_erp_referrer_hrid': 'referrer_hrid'}, inplace=True)
-
-        # raw_employees.rename(columns = {'EMPLOYEE ID': 'EMPLOYEE_ID', 'FULL NAME': 'FULL_NAME'}, inplace=True)
-
-        # Filter raw_applicants & raw_employees Columns
-        raw_applicants = raw_applicants.filter(items = ['site', 'application_date', 'last_name', 'first_name', 'general_source', 'referrer_name', 'referrer_hrid'])
         raw_employees = raw_employees.filter(items = ['employee_id', 'full_name', 'site'])
 
-        # Filtering raw_applicants rows by column value (ERP)
-        booleans = []
-        for x in raw_applicants.general_source:
-            if x.upper() == 'ERP':
-                booleans.append(True)
-            else:
-                booleans.append(False)
-
-        erp = pd.Series(booleans)
-
-        # Write DataFrame to excel file
-        raw_applicants = raw_applicants[erp]
-        # Filter rows by non empty field in the columns selected
         raw_applicants = raw_applicants.replace(' ', np.nan)
         raw_employees = raw_employees.replace(' ', np.nan)
         # remove all null fields (Referrer_Name, Referrer_HRID) both in raw_applicants
         raw_applicants = raw_applicants.dropna(subset=['referrer_name','referrer_hrid'], how='all')
+        raw_applicants = raw_applicants[raw_applicants.general_source.str.upper() == 'ERP']
 
         em_id = []
         em_name = []
         em_site = []
+
+        raw_applicants = raw_applicants[~raw_applicants.index.duplicated(keep='first')]
 
         for i in raw_applicants.index:
             QCoreApplication.processEvents()
@@ -165,7 +190,7 @@ class ERP(QWidget):
 
 if __name__ == "__main__":
 
-    app  = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication([])
     erp = ERP()
     dlg = uic.loadUi("cleanerUI_v2.ui")
 
