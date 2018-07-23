@@ -35,6 +35,13 @@ class ERP(QWidget):
     
 
     def saveAction(self, path):
+        
+        if dlg.lineEdit.text() == "" or dlg.lineEdit_2.text() == "":
+            QMessageBox.information(self, "Empty Field", "Please don't forget to put Applicants and Emplooyes File.")
+            return
+
+        dlg.lineEdit.setText('')
+        dlg.lineEdit_2.setText('')
         dlg.pushButton_3.setEnabled(False)
         dlg.label_5.setText('Processing Please Wait ...')
         self.cleaner(dlg.lineEdit.text(),dlg.lineEdit_2.text(),path)
@@ -65,7 +72,7 @@ class ERP(QWidget):
             emp_id = raw_emp.loc[row_e, 'employee_id']
             emp_name = raw_emp.loc[row_e, 'full_name']  
             emp_site = raw_emp.loc[row_e, 'site']
-            if fuzz.token_sort_ratio(Ref_Name, emp_name) > 95:
+            if fuzz.token_sort_ratio(Ref_Name, emp_name) > 90:
                 return emp_id, emp_name, emp_site
 
     def cleaner(self, app, emp, save):
@@ -187,6 +194,8 @@ class ERP(QWidget):
 
         out_xlsx = save
         raw_applicants.to_excel(out_xlsx, index=False)
+
+        
 
 if __name__ == "__main__":
 

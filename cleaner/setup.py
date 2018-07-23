@@ -32,7 +32,7 @@ exe = None
 
 if sys.platform == 'win32':
     exe = Executable(
-        script= 'C:\\Users\\XBoss\\Documents\\GitHub\\erp_cleaner\\test.py',
+        script= 'C:\\Users\\XBoss\\Documents\\GitHub\VXI_ERP\\cleaner\\test_v2.py',
         initScript = None,
         base = 'Win32GUI',
         targetName = 'ERPcleaner.exe',
